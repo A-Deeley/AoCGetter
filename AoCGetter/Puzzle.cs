@@ -1,10 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AoCGetter;
 
@@ -25,7 +19,7 @@ public class Puzzle
 
     public async Task<IEnumerable<string>> GetInputLines(int year, int day)
     {
-        string dayCacheFile = Path.Combine(_options.CacheDir, year.ToString() ,$"day{day}.txt");
+        string dayCacheFile = Path.Combine(_options.CacheDir, year.ToString(), $"day{day}.txt");
 
         if (File.Exists(dayCacheFile))
             return GetInputFromFile(year, day);
