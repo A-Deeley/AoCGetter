@@ -27,13 +27,6 @@ public static class ServiceCollectionExtensions
         }
     }
 
-    public static IServiceCollection ConfigureAoCSessionKey(this IServiceCollection services, Action<AoCOptions> configureOptions)
-    {
-        services.Configure(configureOptions);
-
-        return services;
-    }
-
     public static IServiceCollection ConfigureAoCSessionKey(this IServiceCollection services, IConfiguration configuration)
     {
         var aocSection = configuration.GetRequiredSection(AoCOptions.Section);
