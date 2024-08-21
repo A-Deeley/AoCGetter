@@ -6,33 +6,17 @@ namespace AoCGetter;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddAoCGetter(this IServiceCollection services)
+    public static void AddAoCGetter(this IServiceCollection services, IConfiguration configuration)
     {
-        var serviceCollection = services.BuildServiceProvider();
-        try
-        {
-            var options = serviceCollection.GetRequiredService<IOptions<AoCOptions>>().Value;
-            services.AddHttpClient("AoCClient", client =>
-            {
-                client.DefaultRequestHeaders.Add("Cookie", $"session={options.SessionToken}");
-            });
-        }
-        catch (InvalidOperationException)
-        {
-            throw new Exception("Could not retrieve required options. Make sure to call AddAocGetter() AFTER configuring your AoC Session Key using ConfigureAoCSessionKey()!!");
-        }
-        finally
-        {
-            services.AddSingleton<Puzzle>();
-        }
+        services.Configure<AoCOptions>(configuration.GetSection(AoCOptions.AdventOfCode));
+
+        services.AddHttpClient<Puzzle>(AddPuzzleClient);
     }
 
-    public static IServiceCollection ConfigureAoCSessionKey(this IServiceCollection services, IConfiguration configuration)
+    static void AddPuzzleClient(IServiceProvider provider, HttpClient client)
     {
-        var aocSection = configuration.GetRequiredSection(AoCOptions.Section);
-
-        services.Configure<AoCOptions>(aocSection);
-
-        return services;
+        var settings = provider.GetRequiredService<IOptions<AoCOptions>>().Value;
+        client.DefaultRequestHeaders.Add("Cookie", $"session={settings.SessionToken}");
+        client.BaseAddress = AoCOptions.WebsiteBaseUri;
     }
 }

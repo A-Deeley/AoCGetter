@@ -7,7 +7,6 @@ public class Puzzle
     readonly AoCOptions _options = null!;
     readonly IHttpClientFactory _httpClientFactory = null!;
     static readonly int CURRENT_YEAR = DateTime.Today.Year;
-    static readonly string AOC_WEBSITE_URL = "https://adventofcode.com";
 
     internal Puzzle(IOptions<AoCOptions> options, IHttpClientFactory httpClientFactory)
     {
@@ -32,7 +31,7 @@ public class Puzzle
     async Task<IEnumerable<string>> GetInputFromUrl(int year, int day)
     {
         using HttpClient client = _httpClientFactory.CreateClient();
-        string url = BuildAoCUrl(year, day);
+        string url = GetPuzzleUrl(year, day);
 
         string input = await client.GetStringAsync(url);
 
@@ -47,5 +46,5 @@ public class Puzzle
         File.WriteAllLines(dayCacheFile, input.Split('\n'));
     }
 
-    static string BuildAoCUrl(int year, int day) => $"{AOC_WEBSITE_URL}/{year}/day/{day}/input";
+    static string GetPuzzleUrl(int year, int day) => $"{year}/day/{day}/input";
 }
